@@ -1,21 +1,31 @@
 import express, { json } from "express";
-
-import db from "./database.js";
-
+import UserModel from "./src/models/UserModel.js";
 
 const app = express();
 
-// app.use(express.json);
+app.use(express.json());
 
 app.listen(3000, () => {
     console.log("Server is running on port 3000")
 });
 
-app.get("/", async (req, res) => {
+app.get("/users", async (req, res) => {
 
-    const [rows] = await db.query("SELECT * FROM users");
-    
-    res.send(rows[0].full_name)
-    
+    const users = await UserModel.findAll();
+
+    const userId = await UserModel.findById(4);
+
+    res.send(userId);
 
 });
+
+app.post("/users", async (req, res) => {
+
+
+   const { name, email } = req.body;
+
+   const data = await UserModel.create(name, email);
+
+   res.send(data)
+
+})
